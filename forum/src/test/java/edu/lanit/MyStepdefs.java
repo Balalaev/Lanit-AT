@@ -1,97 +1,85 @@
 package edu.lanit;
 
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideWait;
-import cucumber.api.java.ru.И;
-import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Condition.*;
+import com.codeborne.selenide.Selenide;
+import cucumber.api.java.ru.И;
+import pages.MainPage;
+import pages.TopicPage;
+
 import static com.codeborne.selenide.Selenide.*;
 
+
 public class MyStepdefs {
+    MainPage main = new MainPage();
+    TopicPage topicPage = new TopicPage();
+
     @И("открываем сайт")
     public void открываемСайт() {
-        open("https://dev.n7lanit.ru/");
+        open("https://dev.n7lanit.ru");
     }
 
-    @И("находим кнопку Войти")
-    public void находимКнопкуВойти() {
-        $(By.xpath(
-                "//div[@class='nav nav-guest']/button[@class='btn navbar-btn btn-default btn-sign-in']")).click();
+    @И("нажимаем кнопку Войти")
+    public void нажимаемКнопкуВойти() {
+        main.loginButton().click();
     }
 
-    @И("вводим логин")
-    public void вводимЛогин() {
-        $(By.xpath("//div[@class='control-input']/input[@id='id_username']")).val("balabaska");
+    @И("находим поле Имя Пользователя и вводим логин")
+    public void НаходимПолеИмяПользователяИВводимЛогин() {
+        main.loginField().sendKeys("balabaska");
     }
 
-    @И("вводим пароль и авторизируемся")
-    public void вводимПарольИАвторизируемся() {
-        $(By.xpath("//div[@class='control-input']/input[@id='id_password']")).val("Lanit2020").pressEnter();
+    @И("находим поле Пароль и вводим пароль")
+    public void НаходимПолеПарольИВводимПароль() {
+        main.passwordField().sendKeys("Lanit2020");
+    }
+
+    @И("нажимаем кнопку Войти2")
+    public void наСтраницеНажимаемКнопкуВойти2() {
+        main.submit().click();
     }
 
     @И("проверяем авторизацию")
     public void проверяемАвторизацию() {
-        $(By.xpath("//div[@id='user-menu-mount']//li[@class='dropdown']/a/img")).shouldBe(enabled);
+        main.avatar().isDisplayed();
     }
 
     @И("выбираем случайную тему")
     public void выбираемСлучайнуюТему() {
-        ElementsCollection collection = $$(By.xpath(
-                "//li[@class='list-group-item thread-new']//a[@class='item-title thread-title']"));
-        collection.get((int) (collection.size()*Math.random())).click();
+        main.randomTopic().click();
     }
 
-    @И("находим и жмем кнопку Ответить")
-    public void находимИЖмемКнопкуОтветить() {
-        Selenide.sleep(1000);
-        $(By.xpath(
-                "//div[@class='col-sm-4 hidden-xs']/button[@class='btn btn-primary btn-block btn-outline']")).shouldHave(
-                text("Ответить")).click();
+    @И("нажимаем кнопку Ответить")
+    public void нажимаемКнопкуОтветить() {
+        topicPage.requestButton().click();
     }
 
-    @И("пишем комментарий")
-    public void пишемКомментарий() {
-        $(By.xpath("//div/textarea")).shouldBe(visible).val("Hello World!").submit();
+    @И("находим текстовое поле и вводим текст")
+    public void находимТекстовоеПолеИВводимТекст() {
+        topicPage.textArea().sendKeys("Luke, I Am Your Father");
     }
 
-    @И("проверяем наличие комментария")
-    public void проверяемНаличиеКомментария() {
-        $(By.xpath("//div[@class='post-body']/article/p[contains(text(),'Hello World!')]")).isDisplayed();
+    @И("нажимаем кнопку Отправить ответ")
+    public void нажимаемКнопкуОтправитьОтвет() {
+        topicPage.sendRequestButton().click();
     }
 
-    @И("переходим во вкладку Темы")
-    public void переходимВоВкладкуТемы() {
-        $(By.xpath("//ul[@class='nav navbar-nav']//a[contains(text(),'Темы')]")).shouldBe(visible).click();
+    @И("проверяем что ответ опубликован")
+    public void проверяемЧтоОтветОпубликован() {
+        topicPage.requestCheck().isDisplayed();
     }
 
-    @И("выбираем снова случайную тему")
-    public void выбираемСноваСлучайнуюТему() {
-        ElementsCollection collection = $$(By.xpath(
-                "//li[@class='list-group-item thread-new']//a[@class='item-title thread-title']"));
-        collection.get((int) (collection.size()*Math.random())).click();
+    @И("переходим на вкладку Темы")
+    public void переходимНаВкладкуТемы() {
+        topicPage.themes().click();
     }
 
-    @И("опять находим и жмем кнопку Ответить")
-    public void опятьНаходимИЖмемКнопкуОтветить() {
-        $(By.xpath(
-                "//div[@class='col-sm-4 hidden-xs']/button[@class='btn btn-primary btn-block btn-outline']")).shouldHave(
-                text("Ответить")).click();
-    }
-
-    @И("пишем еще один комментарий")
-    public void пишемЕщеОдинКомментарий() {
-        $(By.xpath("//div/textarea")).shouldBe(visible).val("Hello World!").submit();
-    }
-
-    @И("проверяем наличие нового комментария")
-    public void проверяемНаличиеНовогоКомментария() {
-        $(By.xpath("//div[@class='post-body']/article/p[contains(text(),'Hello World!')]")).isDisplayed();
-    }
-
-    @И("переходим обратно во вкладку Темы")
-    public void переходимОбратноВоВкладкуТемы() {
-        $(By.xpath("//ul[@class='nav navbar-nav']//a[contains(text(),'Темы')]")).shouldBe(visible).click();
+    @И("повторяем шаги")
+    public void повторяемШаги() {
+        выбираемСлучайнуюТему();
+        нажимаемКнопкуОтветить();
+        находимТекстовоеПолеИВводимТекст();
+        нажимаемКнопкуОтправитьОтвет();
+        проверяемЧтоОтветОпубликован();
+        переходимНаВкладкуТемы();
     }
 }

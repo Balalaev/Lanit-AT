@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
         features = "src/test/java/features",
         glue = "edu.lanit",
         tags = "@test"
-
 )
 
 public class MyTestRunner {
